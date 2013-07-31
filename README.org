@@ -1,5 +1,3 @@
-#+TITLE: Hypo
-
 Quickly share bits of code, screenshots or whatnot with some friends.
 Easily delete them too.
 
