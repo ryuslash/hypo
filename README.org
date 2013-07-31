@@ -68,4 +68,4 @@ Easily delete them too.
   You should have received a copy of the GNU Affero General Public
   License along with Hypo.  If not, see [[http://www.gnu.org/licenses/]].
 
-  See [[http://code.ryuslash.org/cgit.cgi/scrumli/tree/COPYING][COPYING]] for more information.
+  See [[http://code.ryuslash.org/cgit.cgi/hypo/tree/COPYING][COPYING]] for more information.
