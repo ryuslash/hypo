@@ -1,0 +1,5 @@
+#+TITLE: Hypo
+#+OPTIONS: num:nil toc:nil author:nil
+#+STARTUP: showall
+
+#+INCLUDE: "../README.org"

@@ -1,0 +1,52 @@
+$def with (content, style, file)
+$# Hypo -- Sharing is caring.
+$# Copyright (C) 2013  Tom Willemse
+$#
+$# Hypo is free software: you can redistribute it and/or modify it
+$# under the terms of the GNU Affero General Public License as
+$# published by the Free Software Foundation, either version 3 of the
+$# License, or (at your option) any later version.
+$#
+$# Hypo is distributed in the hope that it will be useful, but WITHOUT
+$# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+$# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General
+$# Public License for more details.
+$#
+$# You should have received a copy of the GNU Affero General Public
+$# License along with Hypo.  If not, see <http://www.gnu.org/licenses/>.
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hypo: $file.filename</title>
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css"
+          type="text/css" rel="stylesheet" />
+    <style>$:style</style>
+    <meta name="robots" content="noindex, nofollow">
+  </head>
+  <body>
+    <div class="navbar navbar-static-top navbar-inverse">
+      <div class="navbar-inner">
+        <a class="brand">Hypo</a>
+        <ul class="nav">
+          <li><a href="raw/$file.shash">Raw</a></li>
+          <li><a href="dl/$file.shash">Download</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>$file.filename</h1>
+
+      <div class="row">$:content</div>
+
+      <footer>
+        This site is powered
+        by <a href="http://projects.ryuslash.org/hypo">Hypo</a>. Hypo is
+        available under
+        the <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU
+          Affero General Public License</a>. You can download its source
+        code <a href="http://code.ryuslash.org/cgit.cgi/hypo/">here</a>.
+      </footer>
+    </div>
+  </body>
+</html>

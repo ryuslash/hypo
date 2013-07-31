@@ -1,0 +1,73 @@
+#+TITLE: Hypo
+
+Quickly share bits of code, screenshots or whatnot with some friends.
+Easily delete them too.
+
+* Setup
+
+  Hypo is written in [[http://hylang.org][hy]].  Which is a Lisp and Python thrown together.
+  This doesn't matter much, it should function as a regular python
+  module.
+
+** Requirements
+
+   Hypo has the following requirements:
+
+   - [[http://hylang.org][hy]] :: The language.
+   - [[http://webpy.org][web.py]] :: The Python web framework.
+   - [[http://postgresql.org][Postgresql]] :: The database.
+   - [[http://initd.org/psycopg/][psycopg2]] :: The database connector.
+
+   Besides these it also requires everything needed to run web.py
+   applications using your favorite webserver.
+
+* Usage
+
+  Once setup it will not show much of anything, first you'll have to
+  upload something.
+
+** Uploading
+
+   Uploading is done with the ~PUT~ HTTP method.  An example with curl:
+
+   : # curl --upload-file README.org http://yourserver.example.com/ 2>/dev/null
+   : http://yourserver.example.com/abcdef1
+
+   After uploading a file to the server it will respond with the url
+   of your newly uploaded file.  If you browse to this URL using your
+   favorite browser you will find a page showing the file.  For text
+   files it will try to provide some syntax highlighting, for certain
+   types of images (currently ~jpg~, ~png~ and ~gif~) it will show the
+   image.
+
+   If Hypo doens't know what kind of file you're uploading it will
+   default to treating it as a text file.
+
+** Deleting
+
+   After you have uploaded a file you can delete it again by using
+   the ~DELETE~ HTTP method. An example with curl:
+
+   : # curl -XDELETE http://yourserver.example.com/abcdef1
+   : None
+
+   There is currently no way to authenticate yourself with the
+   server, so anyone can delete (also post) files. Of course they
+   would first have to know the URL to send the delete to.
+
+* License
+
+  Hypo is free software: you can redistribute it and/or modify it
+  under the terms of the GNU Affero General Public License as
+  published by the Free Software Foundation, either version 3 of the
+  License, or (at your option) any later version.
+
+  Hypo is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public
+  License along with Hypo.  If not, see [[http://www.gnu.org/licenses/]].
+
+  See [[http://code.ryuslash.org/cgit.cgi/scrumli/tree/COPYING][COPYING]] for more information.
