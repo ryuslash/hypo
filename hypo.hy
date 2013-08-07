@@ -54,7 +54,6 @@
     res))
 
 (defun no-such-file []
-  (setv web.ctx.status "404 Not Found")
   "No such file.\n")
 
 (defun get-file [name]
@@ -126,7 +125,6 @@
                       "hash" (get h 1)
                       "filename" name
                       "type" (get-type (get (os.path.splitext name) 1))})
-            (setv web.ctx.status "201 Created")
             (+ web.ctx.home "/" *prefix* (get h 0) "\n")))]])
 
 (when (= __name__ "__main__")
