@@ -17,3 +17,8 @@
 (def *dbuser* "")               ; User to log in with
 (def *dbpw* "")                 ; Password to log in with
 (def *dbname* "")               ; Database to use
+
+;; Prefix to use when running. This option should contain a trailing
+;; `/'. An example would be: if you're running this project under
+;; http://example.com/hypo/ you should use "hypo/".
+(def *prefix* "")

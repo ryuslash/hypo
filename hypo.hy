@@ -27,10 +27,10 @@
        (sys.exit 1)))
 
 (def render (web.template.render "templates/"))
-(def urls (, "/raw/(.*)" "raw"
-             "/dl/(.*)" "download"
-             "/([a-f0-9]{7})$" "html"
-             "/(.*)" "upload"))
+(def urls (, (+ "/" *prefix* "raw/(.*)") "raw"
+             (+ "/" *prefix* "dl/(.*)") "download"
+             (+ "/" *prefix* "([a-f0-9]{7})$") "html"
+             (+ "/" *prefix* "(.*)") "upload"))
 (def db
   (kwapply (web.database)
            {"dbn" "postgres" "user" *dbuser* "pw" *dbpw* "db" *dbname*}))
@@ -127,7 +127,7 @@
                       "filename" name
                       "type" (get-type (get (os.path.splitext name) 1))})
             (setv web.ctx.status "201 Created")
-            (+ web.ctx.home "/" (get h 0) "\n")))]])
+            (+ web.ctx.home "/" *prefix* (get h 0) "\n")))]])
 
 (when (= __name__ "__main__")
   (let ((sys.argv (slice sys.argv 1))
