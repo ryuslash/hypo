@@ -1,4 +1,4 @@
-;; Hypo -- Sharing is caring.
+;; Hypo -- Quickly share stuff
 ;; Copyright (C) 2013  Tom Willemse
 
 ;; Hypo is free software: you can redistribute it and/or modify it
