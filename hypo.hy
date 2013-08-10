@@ -17,8 +17,9 @@
 
 (import web sys os hashlib datetime
         [pygments [highlight]]
-        [pygments.lexers [guess-lexer-for-filename]]
-        [pygments.formatters [HtmlFormatter]])
+        [pygments.lexers [get-lexer-by-name guess-lexer-for-filename]]
+        [pygments.formatters [HtmlFormatter]]
+        [pygments.util [ClassNotFound]])
 
 (try (import [config [*]])
      (catch [ImportError]
@@ -62,6 +63,14 @@
                       {"where" "shash = $shash"})))
     (if res (car res))))
 
+(defun get-lexer [filename content]
+  "Try to guess the correct lexer by FILENAME and CONTENT.
+
+If no lexer is found fallback onto the text lexer."
+  (try (guess-lexer-for-filename filename content)
+       (catch [ClassNotFound]
+         (get-lexer-by-name "text"))))
+
 (defclass raw []
   [[GET (lambda [self name]
           (let ((filename (+ "files/" name))
@@ -90,8 +99,7 @@
                ((= hfile.type "text")
                 (progn
                  (let ((content (read-file filename))
-                       (lexer (guess-lexer-for-filename
-                               hfile.filename content))
+                       (lexer (get-lexer hfile.filename content))
                        (formatter (HtmlFormatter)))
                    (kwapply (render.main)
                             {"content" (highlight content lexer
