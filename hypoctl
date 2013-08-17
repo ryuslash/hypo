@@ -1,0 +1,56 @@
+#!/usr/bin/env hy
+;; Hypo -- Quickly share stuff
+;; Copyright (C) 2013  Tom Willemse
+
+;; Hypo is free software: you can redistribute it and/or modify it
+;; under the terms of the GNU Affero General Public License as
+;; published by the Free Software Foundation, either version 3 of the
+;; License, or (at your option) any later version.
+
+;; Hypo is distributed in the hope that it will be useful, but WITHOUT
+;; ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+;; or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General
+;; Public License for more details.
+
+;; You should have received a copy of the GNU Affero General Public
+;; License along with Hypo.  If not, see <http://www.gnu.org/licenses/>.
+
+(import pycommand sys web os
+        [hypo [hypo-start]])
+
+(try (import [config [*]])
+     (catch [ImportError]
+       (print "Please copy the config.example.hy to config.hy and set"
+              "the values to your preference.")
+       (sys.exit 1)))
+
+(def db
+  (kwapply (web.database)
+           {"dbn" "postgres" "user" *dbuser* "pw" *dbpw* "db" *dbname*}))
+
+(defun hypo-purge [argv]
+  (db.delete "hfile" "TRUE")
+  (foreach [f (os.listdir "files/")]
+    (os.remove (os.path.join "files" f))))
+
+(defclass hypoctl-command (pycommand.CommandBase)
+  [[usagestr "usage: hypoctl <command> [<args]"]
+   [description "Control hypo"]
+   [run (lambda [self]
+          (cond
+           ((not self.args)
+            (progn (print self.usage) 2))
+           ((= (car self.args) "purge")
+            (hypo-purge (cdr self.args)))
+           ((= (car self.args) "start")
+            (hypo-start (cdr self.args)))
+           (True
+            (print (.format "error: command {0} does not exist"
+                            (car self.args))))))]])
+
+(when (= __name__ "__main__")
+  (let ((cmd (hypoctl-command (cdr (cdr sys.argv)))))
+    (if cmd.error
+      (progn (print (.format "error: {0}" cmd.error))
+             (sys.exit 1))
+      (sys.exit (cmd.run)))))

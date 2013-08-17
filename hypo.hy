@@ -137,7 +137,7 @@ If no lexer is found fallback onto the text lexer."
             (setv web.ctx.status (str "201 Created"))
             (+ web.ctx.home "/" *prefix* (get h 0) "\n")))]])
 
-(when (= __name__ "__main__")
-  (let ((sys.argv (slice sys.argv 1))
+(defun hypo-start [argv]
+  (let ((sys.argv (cdr (cdr sys.argv)))
         (app (web.application urls (globals))))
     (.run app)))
