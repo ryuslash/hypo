@@ -138,6 +138,6 @@ If no lexer is found fallback onto the text lexer."
             (+ web.ctx.home "/" *prefix* (get h 0) "\n")))]])
 
 (defun hypo-start [argv]
-  (let ((sys.argv (cdr (cdr sys.argv)))
+  (let ((sys.argv (cdr sys.argv))
         (app (web.application urls (globals))))
     (.run app)))
