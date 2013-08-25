@@ -1,0 +1,159 @@
+$# Hypo -- Quickly share stuff
+$# Copyright (C) 2013  Tom Willemse
+$#
+$# Hypo is free software: you can redistribute it and/or modify it
+$# under the terms of the GNU Affero General Public License as
+$# published by the Free Software Foundation, either version 3 of the
+$# License, or (at your option) any later version.
+$#
+$# Hypo is distributed in the hope that it will be useful, but WITHOUT
+$# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+$# or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Affero General
+$# Public License for more details.
+$#
+$# You should have received a copy of the GNU Affero General Public
+$# License along with Hypo.  If not, see <http://www.gnu.org/licenses/>.
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Hypo</title>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css"
+          type="text/css" rel="stylesheet" />
+    <meta name="robots" content="noindex, nofollow">
+  </head>
+  <body>
+    <div class="navbar navbar-static-top navbar-inverse">
+      <div class="navbar-inner">
+        <a class="brand">Hypo</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1>Hypo</h1>
+
+      <p>
+        This is hypo. Hypo is supposed to be an easy way to share/store
+        code snippets and other files.
+      </p>
+
+      <div id="outline-container-sec-1-1" class="outline-3">
+        <h2 id="sec-1">Usage</h2>
+        <div class="outline-text-2" id="text-1">
+          <p>
+            Once setup it will not show much of anything, first you'll
+            have to upload something.
+          </p>
+        </div>
+
+        <div id="outline-container-sec-1-1" class="outline-3">
+          <h3 id="sec-1-1">Uploading</h3>
+          <div class="outline-text-3" id="text-1-1">
+            <p>
+              Uploading is done with the <code>PUT</code> HTTP method.
+              An example with curl:
+            </p>
+
+            <pre class="example"># curl --upload-file README.org http://yourserver.example.com/ 2&gt;/dev/null
+http://yourserver.example.com/abcdef1</pre>
+
+            <p>
+              After uploading a file to the server it will respond
+              with the url of your newly uploaded file. If you browse
+              to this URL using your favorite browser you will find a
+              page showing the file. For text files it will try to
+              provide some syntax highlighting, for certain types of
+              images (currently <code>jpg</code>, <code>png</code>
+              and <code>gif</code>) it will show the image.
+            </p>
+
+            <p>
+              If Hypo doens't know what kind of file you're uploading
+              it will default to treating it as a text file.
+            </p>
+          </div>
+        </div>
+        <div id="outline-container-sec-1-2" class="outline-3">
+          <h3 id="sec-1-2">Viewing</h3>
+          <div class="outline-text-3" id="text-1-2">
+            <p>
+              All files can be viewed (from, for example, your web
+              browser) in three different ways. The regularly, raw and
+              as download.
+            </p>
+
+            <p>
+              The regular way shows a web page with the file either
+              syntax highlighted using <code>pygments</code> or (in
+              case it is an image) with the image shown on the page.
+              This is viewed by using the URL printed after upload has
+              completed. For example:
+            </p>
+
+            <pre class="example">http://yourserver.example.com/abcdef1</pre>
+
+            <p>
+              The raw view is just the file, saving this file is the
+              same as downloading it. This is viewed by prefixing the
+              last part of the URL with <code>raw/</code>. For
+              example:
+            </p>
+
+            <pre class="example">http://yourserver.example.com/raw/abcdef1</pre>
+
+            <p>
+              The download view is the same as the raw view except
+              that the <code>Content-Disposition</code> header has
+              been set to <code>attachment</code>. This causes a
+              download dialog to show up instead of your browser
+              trying to render it. This ir viewed by prefixing the
+              last part of the URL with <code>dl/</code>. For example:
+            </p>
+
+            <pre class="example">http://yourserver.example.com/dl/abcdef1</pre>
+          </div>
+        </div>
+        <div id="outline-container-sec-1-3" class="outline-3">
+          <h3 id="sec-1-3">Deleting</h3>
+          <div class="outline-text-3" id="text-1-3">
+            <p>
+              After you have uploaded a file you can delete it again
+              by using the <code>DELETE</code> HTTP method. An example
+              with curl:
+            </p>
+
+            <pre class="example"># curl -XDELETE http://yourserver.example.com/abcdef1
+None</pre>
+
+            <p>
+              There is currently no way to authenticate yourself with
+              the server, so anyone can delete (also post) files. Of
+              course they would first have to know the URL to send the
+              delete to.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div id="outline-container-sec-2" class="outline-2">
+        <h2 id="sec-2">Clients</h2>
+        <div class="outline-text-2" id="text-2">
+          <p>
+            Hypo tries to stay simple to work with, at least on the
+            client-side. However, some clients may make things easier.
+            Currently there is only the
+            (incomplete) <a href="http://code.ryuslash.org/hypo-emacs/">Emacs
+            client</a>.
+          </p>
+        </div>
+      </div>
+
+      <footer>
+        This site is powered
+        by <a href="http://projects.ryuslash.org/hypo">Hypo</a>. Hypo
+        is available under
+        the <a href="https://www.gnu.org/licenses/agpl-3.0.html">GNU
+        Affero General Public License</a>. You can download its source
+        code <a href="http://code.ryuslash.org/cgit.cgi/hypo/">here</a>.
+      </footer>
+    </div>
+  </body>
+</html>

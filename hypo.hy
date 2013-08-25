@@ -28,7 +28,8 @@
        (sys.exit 1)))
 
 (def render (web.template.render "templates/"))
-(def urls (, (+ "/" *prefix* "raw/(.*)") "raw"
+(def urls (, (+ "/" *prefix*) "index"
+             (+ "/" *prefix* "raw/(.*)") "raw"
              (+ "/" *prefix* "dl/(.*)") "download"
              (+ "/" *prefix* "([a-f0-9]{7})$") "html"
              (+ "/" *prefix* "(.*)") "upload"))
@@ -136,6 +137,9 @@ If no lexer is found fallback onto the text lexer."
                       "type" (get-type (get (os.path.splitext name) 1))})
             (setv web.ctx.status (str "201 Created"))
             (+ web.ctx.home "/" *prefix* (get h 0) "\n")))]])
+
+(defclass index []
+  [[GET (lambda [self] (render.index))]])
 
 (defun hypo-start [argv]
   (let ((sys.argv (cdr sys.argv))

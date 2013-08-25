@@ -1,3 +1,5 @@
+#+STARTUP: showall
+
 Quickly share bits of code, screenshots or whatnot with some friends.
 Easily delete them too.
 
@@ -41,6 +43,32 @@ Easily delete them too.
    If Hypo doens't know what kind of file you're uploading it will
    default to treating it as a text file.
 
+** Viewing
+
+   All files can be viewed (from, for example, your web browser) in
+   three different ways. The regularly, raw and as download.
+
+   The regular way shows a web page with the file either syntax
+   highlighted using ~pygments~ or (in case it is an image) with the
+   image shown on the page. This is viewed by using the URL printed
+   after upload has completed. For example:
+
+   : http://yourserver.example.com/abcdef1
+
+   The raw view is just the file, saving this file is the same as
+   downloading it. This is viewed by prefixing the last part of the
+   URL with ~raw/~. For example:
+
+   : http://yourserver.example.com/raw/abcdef1
+
+   The download view is the same as the raw view except that the
+   ~Content-Disposition~ header has been set to ~attachment~. This causes
+   a download dialog to show up instead of your browser trying to
+   render it. This ir viewed by prefixing the last part of the URL
+   with ~dl/~. For example:
+
+   : http://yourserver.example.com/dl/abcdef1
+
 ** Deleting
 
    After you have uploaded a file you can delete it again by using
@@ -52,6 +80,12 @@ Easily delete them too.
    There is currently no way to authenticate yourself with the
    server, so anyone can delete (also post) files. Of course they
    would first have to know the URL to send the delete to.
+
+* Clients
+
+  Hypo tries to stay simple to work with, at least on the
+  client-side. However, some clients may make things easier.
+  Currently there is only the (incomplete) [[http://code.ryuslash.org/hypo-emacs/][Emacs client]].
 
 * License
 
