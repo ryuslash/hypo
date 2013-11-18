@@ -15,11 +15,12 @@
 ;; You should have received a copy of the GNU Affero General Public
 ;; License along with Hypo.  If not, see <http://www.gnu.org/licenses/>.
 
-(import web sys os hashlib datetime
+(import web sys os hashlib datetime shutil
         [pygments [highlight]]
         [pygments.lexers [get-lexer-by-name guess-lexer-for-filename]]
         [pygments.formatters [HtmlFormatter]]
-        [pygments.util [ClassNotFound]])
+        [pygments.util [ClassNotFound]]
+        [gittle [Gittle]])
 
 (try (import [config [*]])
      (catch [ImportError]
@@ -33,9 +34,6 @@
              (+ "/" *prefix* "dl/(.*)") "download"
              (+ "/" *prefix* "([a-f0-9]{7})$") "html"
              (+ "/" *prefix* "(.*)") "upload"))
-(def db
-  (kwapply (web.database)
-           {"dbn" "postgres" "user" *dbuser* "pw" *dbpw* "db" *dbname*}))
 
 (defun hashes [name]
   (let ((hasher (hashlib.sha1)))
@@ -59,11 +57,6 @@
   (setv web.ctx.status (str "404 Not Found"))
   "No such file.\n")
 
-(defun get-file [name]
-  (let ((res (kwapply (db.select "hfile" {"shash" name})
-                      {"where" "shash = $shash"})))
-    (if res (car res))))
-
 (defun get-lexer [filename content]
   "Try to guess the correct lexer by FILENAME and CONTENT.
 
@@ -74,67 +67,77 @@ If no lexer is found fallback onto the text lexer."
 
 (defclass raw []
   [[GET (lambda [self name]
-          (let ((filename (+ "files/" name))
-                (resp (if (os.path.exists filename)
-                        (read-file filename))))
+          (let ((dirname (+ "files/" (os.path.dirname name)))
+                (repo (and (os.path.exists dirname)
+                           (Gittle dirname)))
+                (resp (if repo
+                        (get (.commit-file
+                              repo "HEAD" (os.path.basename name))
+                             "data"))))
             (or resp (no-such-file))))]])
 
 (defclass download []
   [[GET (lambda [self name]
-          (let ((hfile (get-file name))
-                (filename (+ "files/" name)))
-            (if (and hfile (os.path.exists filename))
+          (let ((dirname (+ "files/" (os.path.dirname name)))
+                (repo (and (os.path.exists dirname)
+                           (Gittle dirname))))
+            (if repo
               (progn
                (web.header "Content-Disposition"
-                           (+ "attachment; filename=\""
-                              hfile.filename "\""))
-               (read-file filename))
+                           (+ "attachment; filename=\"" name "\""))
+               (get (.commit-file repo "HEAD"
+                                  (os.path.basename name)) "data"))
               (no-such-file))))]])
+
+(defun render-file [hash repo ref filename]
+  (if (not (os.path.isdir filename))
+    (let ((content (get (.commit-file repo ref filename) "data"))
+          (lexer (get-lexer filename content))
+          (formatter (HtmlFormatter))
+          (args {"file" filename "hash" hash}))
+      (.update
+       args (if (in (get (os.path.splitext filename) 1)
+                    [".png" ".jpg" ".jpeg" ".gif"])
+              {"content" (kwapply (render.image)
+                                  {"name" filename
+                                   "hash" hash})
+               "style" ""}
+              {"content" (highlight content lexer formatter)
+               "style" (formatter.get-style-defs ".highlight")}))
+      (kwapply (render.main) args))
+    ""))
 
 (defclass html []
   [[GET (lambda [self name]
-          (let ((hfile (get-file name))
-                (filename (+ "files/" name)))
-            (if (and hfile (os.path.exists filename))
-              (cond
-               ((= hfile.type "text")
-                (progn
-                 (let ((content (read-file filename))
-                       (lexer (get-lexer hfile.filename content))
-                       (formatter (HtmlFormatter)))
-                   (kwapply (render.main)
-                            {"content" (highlight content lexer
-                                                  formatter)
-                             "style" (formatter.get-style-defs
-                                      ".highlight")
-                             "file" hfile})
-                   )))
-               ((= hfile.type "image")
-                (kwapply (render.main)
-                         {"content" (kwapply (render.image)
-                                             {"name" name})
-                          "style" ""
-                          "file" hfile})))
+          (let ((dirname (+ "files/" name))
+                (repo (and (os.path.exists dirname)
+                           (Gittle dirname))))
+            (if repo
+              (car (list-comp (render-file name repo "HEAD" f)
+                              [f (.iterkeys (.commit-tree repo "HEAD"))]
+                              (not (or (= f ".")
+                                       (= f "..")))))
               (no-such-file))))]
 
    [DELETE (lambda [self name]
-             (let ((filename (+ "files/" name)))
-               (kwapply (db.delete "hfile")
-                        {"where" (+ "shash = '" name "'")})
-               (if (os.path.exists filename)
-                 (os.remove filename)
+             (let ((dirname (+ "files/" name)))
+               (if (os.path.exists dirname)
+                 (shutil.rmtree dirname)
                  (no-such-file))))]])
 
 (defclass upload []
   [[PUT (lambda [self name]
-          (let ((h (hashes name)))
-            (with [f (file (+ "files/" (get h 0)) "w")]
+          (let ((h (hashes name))
+                (dirname (+ "files/" (get h 0))))
+            (os.mkdir dirname)
+            (with [f (file (+ dirname "/" name) "w")]
                   (.write f (web.data)))
-            (kwapply (db.insert "hfile")
-                     {"shash" (get h 0)
-                      "hash" (get h 1)
-                      "filename" name
-                      "type" (get-type (get (os.path.splitext name) 1))})
+            (let ((repo (Gittle.init dirname)))
+              (.stage repo [(str name)])
+              (kwapply (repo.commit)
+                       {"name" "Hypo"
+                        "email" "hypo@ryuslash.org"
+                        "message" "Initial commit"}))
             (setv web.ctx.status (str "201 Created"))
             (+ web.ctx.home "/" *prefix* (get h 0) "\n")))]])
 
@@ -142,6 +145,6 @@ If no lexer is found fallback onto the text lexer."
   [[GET (lambda [self] (render.index))]])
 
 (defun hypo-start [argv]
-  (let ((sys.argv (cdr sys.argv))
+  (let ((sys.argv argv)
         (app (web.application urls (globals))))
     (.run app)))

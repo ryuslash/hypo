@@ -18,21 +18,6 @@
 (import pycommand sys web os
         [hypo [hypo-start]])
 
-(try (import [config [*]])
-     (catch [ImportError]
-       (print "Please copy the config.example.hy to config.hy and set"
-              "the values to your preference.")
-       (sys.exit 1)))
-
-(def db
-  (kwapply (web.database)
-           {"dbn" "postgres" "user" *dbuser* "pw" *dbpw* "db" *dbname*}))
-
-(defun hypo-purge [argv]
-  (db.delete "hfile" "TRUE")
-  (foreach [f (os.listdir "files/")]
-    (os.remove (os.path.join "files" f))))
-
 (defclass hypoctl-command (pycommand.CommandBase)
   [[usagestr "usage: hypoctl <command> [<args]"]
    [description "Control hypo"]
@@ -40,8 +25,6 @@
           (cond
            ((not self.args)
             (progn (print self.usage) 2))
-           ((= (car self.args) "purge")
-            (hypo-purge (cdr self.args)))
            ((= (car self.args) "start")
             (hypo-start (cdr self.args)))
            (True

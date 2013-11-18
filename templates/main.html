@@ -1,4 +1,4 @@
-$def with (content, style, file)
+$def with (content, style, file, hash)
 $# Hypo -- Quickly share stuff
 $# Copyright (C) 2013  Tom Willemse
 $#
@@ -17,7 +17,7 @@ $# License along with Hypo.  If not, see <http://www.gnu.org/licenses/>.
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Hypo: $file.filename</title>
+    <title>Hypo: $file</title>
     <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css"
           type="text/css" rel="stylesheet" />
     <style>$:style</style>
@@ -27,15 +27,15 @@ $# License along with Hypo.  If not, see <http://www.gnu.org/licenses/>.
     <div class="navbar navbar-static-top navbar-inverse">
       <div class="navbar-inner">
         <a class="brand">Hypo</a>
-        <ul class="nav">
-          <li><a href="raw/$file.shash">Raw</a></li>
-          <li><a href="dl/$file.shash">Download</a></li>
-        </ul>
       </div>
     </div>
 
     <div class="container">
-      <h1>$file.filename</h1>
+      <h1>
+        $file
+        <a href="raw/$hash/$file"><i class="icon-file"></i></a>
+        <a href="dl/$hash/$file"><i class="icon-download"></i></a>
+      </h1>
 
       <div class="row">$:content</div>
 
