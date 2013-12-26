@@ -65,29 +65,25 @@ If no lexer is found fallback onto the text lexer."
        (catch [ClassNotFound]
          (get-lexer-by-name "text"))))
 
-(defclass raw []
-  [[GET (lambda [self name]
-          (let ((dirname (+ "files/" (os.path.dirname name)))
-                (repo (and (os.path.exists dirname)
-                           (Gittle dirname)))
-                (resp (if repo
-                        (get (.commit-file
-                              repo "HEAD" (os.path.basename name))
-                             "data"))))
-            (or resp (no-such-file))))]])
+(defun get-raw [self name]
+  (let ((dirname (+ "files/" (os.path.dirname name)))
+        (repo (and (os.path.exists dirname)
+                   (Gittle dirname)))
+        (resp (if repo
+                (get (.commit-file repo "HEAD" (os.path.basename name))
+                     "data"))))
+    (or resp (no-such-file))))
 
-(defclass download []
-  [[GET (lambda [self name]
-          (let ((dirname (+ "files/" (os.path.dirname name)))
-                (repo (and (os.path.exists dirname)
-                           (Gittle dirname))))
-            (if repo
-              (progn
-               (web.header "Content-Disposition"
-                           (+ "attachment; filename=\"" name "\""))
-               (get (.commit-file repo "HEAD"
-                                  (os.path.basename name)) "data"))
-              (no-such-file))))]])
+(defun get-attachment [self name]
+  (let ((dirname (+ "files/" (os.path.dirname name)))
+        (repo (and (os.path.exists dirname)
+                   (Gittle dirname))))
+    (if repo
+      (progn
+       (web.header "Content-Disposition"
+                   (+ "attachment; filename=\"" name "\""))
+       (get (.commit-file repo "HEAD" (os.path.basename name)) "data"))
+      (no-such-file))))
 
 (defun render-file [hash repo ref filename]
   (if (not (os.path.isdir filename))
@@ -107,39 +103,50 @@ If no lexer is found fallback onto the text lexer."
       (kwapply (render.main) args))
     ""))
 
-(defclass html []
-  [[GET (lambda [self name]
-          (let ((dirname (+ "files/" name))
-                (repo (and (os.path.exists dirname)
-                           (Gittle dirname))))
-            (if repo
-              (car (list-comp (render-file name repo "HEAD" f)
-                              [f (.iterkeys (.commit-tree repo "HEAD"))]
-                              (not (or (= f ".")
-                                       (= f "..")))))
-              (no-such-file))))]
+(defun get-html [self name]
+  (let ((dirname (+ "files/" name))
+        (repo (and (os.path.exists dirname)
+                   (Gittle dirname))))
+    (if repo
+      (car (list-comp (render-file name repo "HEAD" f)
+                      [f (.iterkeys (.commit-tree repo "HEAD"))]
+                      (not (or (= f ".")
+                               (= f "..")))))
+      (no-such-file))))
 
-   [DELETE (lambda [self name]
-             (let ((dirname (+ "files/" name)))
-               (if (os.path.exists dirname)
-                 (shutil.rmtree dirname)
-                 (no-such-file))))]])
+(defun delete-dir [self name]
+  (let ((dirname (+ "files/" name)))
+    (if (os.path.exists dirname)
+      (shutil.rmtree dirname)
+      (no-such-file))))
+
+(defun upload-file [self name]
+  (let ((h (hashes name))
+        (dirname (+ "files/" (get h 0))))
+    (os.mkdir dirname)
+    (with [f (file (+ dirname "/" name) "w")]
+          (.write f (web.data)))
+    (let ((repo (Gittle.init dirname)))
+      (.stage repo [(str name)])
+      (kwapply (repo.commit)
+               {"name" "Hypo"
+                "email" "hypo@ryuslash.org"
+                "message" "Initial commit"}))
+    (setv web.ctx.status (str "201 Created"))
+    (+ web.ctx.home "/" *prefix* (get h 0) "\n")))
+
+(defclass raw []
+  [[GET get-raw]])
+
+(defclass download []
+  [[GET get-attachment]])
+
+(defclass html []
+  [[GET get-html]
+   [DELETE delete-dir]])
 
 (defclass upload []
-  [[PUT (lambda [self name]
-          (let ((h (hashes name))
-                (dirname (+ "files/" (get h 0))))
-            (os.mkdir dirname)
-            (with [f (file (+ dirname "/" name) "w")]
-                  (.write f (web.data)))
-            (let ((repo (Gittle.init dirname)))
-              (.stage repo [(str name)])
-              (kwapply (repo.commit)
-                       {"name" "Hypo"
-                        "email" "hypo@ryuslash.org"
-                        "message" "Initial commit"}))
-            (setv web.ctx.status (str "201 Created"))
-            (+ web.ctx.home "/" *prefix* (get h 0) "\n")))]])
+  [[PUT upload-file]])
 
 (defclass index []
   [[GET (lambda [self] (render.index))]])
