@@ -44,12 +44,12 @@
 
 (defun get-type [ext]
   (cond
-   ((in ext (, ".jpg" ".jpeg" ".png" ".gif")) "image")
-   (true "text")))
+   [(in ext (, ".jpg" ".jpeg" ".png" ".gif")) "image"]
+   [True "text"]))
 
 (defun read-file [filename]
   (let (res)
-    (with [f (file filename "r")]
+    (with [[f (file filename "r")]]
           (setv res (f.read)))
     res))
 
@@ -124,7 +124,7 @@ If no lexer is found fallback onto the text lexer."
   (let ((h (hashes name))
         (dirname (+ "files/" (get h 0))))
     (os.mkdir dirname)
-    (with [f (file (+ dirname "/" name) "w")]
+    (with [[f (file (+ dirname "/" name) "w")]]
           (.write f (web.data)))
     (let ((repo (Gittle.init dirname)))
       (.stage repo [(str name)])
