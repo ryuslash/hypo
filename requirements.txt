@@ -1,0 +1,5 @@
+hy==0.9.12
+gittle==0.2.2
+pycommand==0.1.0
+web.py==0.37
+Pygments==1.6
