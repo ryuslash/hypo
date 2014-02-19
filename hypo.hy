@@ -55,7 +55,7 @@
 
 (defun no-such-file []
   (setv web.ctx.status (str "404 Not Found"))
-  "No such file.\n")
+  (render.notfound))
 
 (defun get-lexer [filename content]
   "Try to guess the correct lexer by FILENAME and CONTENT.
