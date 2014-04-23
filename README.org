@@ -64,7 +64,7 @@ Easily delete them too.
    The download view is the same as the raw view except that the
    ~Content-Disposition~ header has been set to ~attachment~. This causes
    a download dialog to show up instead of your browser trying to
-   render it. This ir viewed by prefixing the last part of the URL
+   render it. This is viewed by prefixing the last part of the URL
    with ~dl/~. For example:
 
    : http://yourserver.example.com/dl/abcdef1
