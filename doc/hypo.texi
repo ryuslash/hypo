@@ -1,0 +1,188 @@
+\input texinfo   @c -*-texinfo-*-
+@c %**start of header
+@setfilename hypo.info
+@settitle Hypo user manual
+@c %**end of header
+@copying
+How to use hypo.
+
+Copyright @copyright{} 2013  Tom Willemse
+
+@quotation
+Permission is granted to copy, distribute and/or modify this document
+under the terms of the GNU Free Documentation License, Version 1.3
+or any later version published by the Free Software Foundation;
+with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts.
+A copy of the license is included in the section entitled ``GNU
+Free Documentation License''.
+
+A copy of the license is also available from the Free Software
+Foundation Web site at @url{http://www.gnu.org/licenses/fdl.html}.
+
+@end quotation
+
+The document was typeset with
+@uref{http://www.texinfo.org/, GNU Texinfo}.
+
+@end copying
+
+@titlepage
+@title Hypo user manual
+@subtitle How to use hypo
+@author Tom Willemse <tom@@ryuslash.org>
+@page
+@vskip 0pt plus 1filll
+@insertcopying
+@end titlepage
+
+@c Output the table of the contents at the beginning.
+@contents
+
+@ifnottex
+@node Top, Introduction, (dir), (dir)
+@top Hypo user manual
+
+@insertcopying
+@end ifnottex
+
+@c Generate the nodes for this menu with `C-c C-u C-m'.
+@menu
+* Introduction::                Meet Hypo
+* Usage::                       What you can do with hypo
+* Clients::
+* Copying This Manual::
+* Index::
+@end menu
+
+@c Update all node entries with `C-c C-u C-n'.
+@c Insert new nodes with `C-c C-c n'.
+@node Introduction, Usage, Top, Top
+@chapter Introduction to Hypo
+
+Hypo comes from a desire to share snippets, screenshots and the like
+with friends and colleagues the easiest and fastest way possible.
+
+@menu
+* Features::                    What hypo can do
+@end menu
+
+@node Features,  , Introduction, Introduction
+@section Features
+
+Hypo offers a small, but useful number of features.
+
+@itemize
+@item
+Easy sharing and maintenance of files, snippets or screenshots using
+familiar HTTP verbs such as @samp{POST}, @samp{GET} and @samp{DELETE}.
+
+@item
+Syntax highlighting with @uref{http://pygments.org/, pygments}.
+
+@item
+Separate HTML, raw or download views.
+@end itemize
+
+@node Usage, Clients, Introduction, Top
+@chapter Using hypo
+
+Hypo is used through a very simple web API that uses normal, everyday
+HTTP methods to manipulate files.
+
+@menu
+* Uploading::                   Getting new files in hypo
+* Viewing::                     Viewing the files in hypo
+* Deleting::                    Removing old files from hypo
+@end menu
+
+@node Uploading, Viewing, Usage, Usage
+@section Uploading files
+
+Uploading is done with the @samp{PUT} HTTP method. An example with
+curl:
+
+@example
+# curl --upload-file README.org http://yourserver.example.com/ 2>/dev/null
+http://yourserver.example.com/abcdef1
+@end example
+
+After uploading a file to the server it will respond with the url of
+your newly uploaded file. If you browse to this URL using your
+favorite browser you will find a page showing the file. For text files
+it will try to provide some syntax highlighting, for certain types of
+images (currently @samp{jpg}, @samp{png} and @samp{gif}) it will show
+the image.
+
+If Hypo doesn't know what kind of file you're uploading it will
+default to treating it as a text file.
+
+@node Viewing, Deleting, Uploading, Usage
+@section Viewing uploaded files
+
+All files can be viewed (from, for example, your web browser) in three
+different ways. The regularly, raw and as download.
+
+The regular way sshows a web page with the file either syntax
+highlighted using @samp{pygments} or (in case it is an image) with the
+image shown on the page. This is viewed using the URL printed after
+upload has completed. For example:
+
+@example
+http://yourserver.example.com/abcdef1
+@end example
+
+The raw view is just the file, saving this file is the same as
+downloading it. This is viewed by prefixing the last part of the URL
+with @samp{raw/}. For example:
+
+@example
+http://yourserver.example.com/raw/abcdef1
+@end example
+
+The download view is the same as the raw view except that the
+@samp{Content-Disposition} header has been set to @samp{attachment}.
+This causes a download dialog to show up instead of your browser
+trying to render it. This is viewed by prefixing the last part of the
+URL with @samp{dl/}. For example:
+
+@example
+http://yourserver.example.com/dl/abcdef1
+@end example
+
+@node Deleting,  , Viewing, Usage
+@section Deleting uploaded files
+
+After you have uploaded a file you can delete it again by using the
+@samp{DELETE} HTTP method. An example with curl:
+
+@example
+# curl -XDELETE http://yourserver.example.com/abcdef1
+Succesfully removed abcdef1
+@end example
+
+There is currently no way to authenticate yourself with the server,
+so anyone can delete (also post) files. Of course they would first
+have to know the URL to send the delete to.
+
+@node Clients, Copying This Manual, Usage, Top
+@chapter Client programs
+
+Hypo tries to stay simple to work with, at least on the client-side.
+However, some clients may make things even easier. Currently there is
+the (incomplete) @uref{http://code.ryuslash.org/hypo-emacs/about/,
+Emacs client} and also a
+@uref{http://code.ryuslash.org/hypo-cli/about/, simple CLI client}.
+
+@node Copying This Manual, Index, Clients, Top
+@appendix Copying This Manual
+
+@include fdl.texi
+
+@node Index,  , Copying This Manual, Top
+@unnumbered Index
+
+@printindex cp
+
+@bye
+
+@c hypo.texi ends here
