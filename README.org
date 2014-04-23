@@ -75,7 +75,7 @@ Easily delete them too.
    the ~DELETE~ HTTP method. An example with curl:
 
    : # curl -XDELETE http://yourserver.example.com/abcdef1
-   : None
+   : Successfully removed abcdef1
 
    There is currently no way to authenticate yourself with the
    server, so anyone can delete (also post) files. Of course they
@@ -83,9 +83,9 @@ Easily delete them too.
 
 * Clients
 
-  Hypo tries to stay simple to work with, at least on the
-  client-side. However, some clients may make things easier.
-  Currently there is only the (incomplete) [[http://code.ryuslash.org/hypo-emacs/][Emacs client]].
+  Hypo tries to stay simple to work with, at least on the client-side.
+  However, some clients may make things easier. Currently there is
+  only the (incomplete) [[http://code.ryuslash.org/hypo-emacs/][Emacs client]] and a simple [[http://code.ryuslash.org/hypo-cli/about/][CLI client]].
 
 * License
 
