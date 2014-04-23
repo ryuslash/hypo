@@ -118,7 +118,7 @@ If no lexer is found fallback onto the text lexer."
   (let ((dirname (+ "files/" name)))
     (if (os.path.exists dirname)
       (do (shutil.rmtree dirname)
-          (+ "Succesfully removed " name "\n"))
+          (+ "Successfully removed " name "\n"))
       (no-such-file))))
 
 (defun upload-file [self name]
