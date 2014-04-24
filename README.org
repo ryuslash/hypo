@@ -1,11 +1,11 @@
 #+STARTUP: showall
 
-Quickly share bits of code, screenshots or whatnot with some friends.
+Quickly share bits of code, screenshots and whatnot with some friends.
 Easily delete them too.
 
 * Setup
 
-  Hypo is written in [[http://hylang.org][hy]].  Which is a Lisp and Python thrown together.
+  Hypo is written in [[http://hylang.org][hy]]. Which is a Lisp and Python thrown together.
   This doesn't matter much, it should function as a regular python
   module.
 
@@ -15,16 +15,17 @@ Easily delete them too.
 
    - [[http://hylang.org][hy]] :: The language.
    - [[http://webpy.org][web.py]] :: The Python web framework.
-   - [[http://postgresql.org][Postgresql]] :: The database.
-   - [[http://initd.org/psycopg/][psycopg2]] :: The database connector.
+   - [[https://github.com/FriendCode/gittle][gittle]] :: Pythonic Git for Humans
+   - [[https://bitbucket.org/babab/pycommand][pycommand]] :: Command line arguments parser
+   - [[http://pygments.org/][Pygments]] :: Python syntax highlighter
 
    Besides these it also requires everything needed to run web.py
    applications using your favorite webserver.
 
 * Usage
 
-  Once setup it will not show much of anything, first you'll have to
-  upload something.
+  Once setup it will show most of this file if you browse to the ~/~ of
+  your installation, then you'll have to upload something.
 
 ** Uploading
 
