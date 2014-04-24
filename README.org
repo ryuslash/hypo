@@ -1,4 +1,5 @@
 #+STARTUP: showall
+#+OPTIONS: toc:nil
 
 Quickly share bits of code, screenshots and whatnot with some friends.
 Easily delete them too.
