@@ -90,17 +90,17 @@ If no lexer is found fallback onto the text lexer."
     (let ((content (get (.commit-file repo ref filename) "data"))
           (lexer (get-lexer filename content))
           (formatter (HtmlFormatter))
-          (args {"file" filename "hash" hash}))
+          (kwargs {"file" filename "hash" hash}))
       (.update
-       args (if (in (get (os.path.splitext filename) 1)
+       kwargs (if (in (get (os.path.splitext filename) 1)
                     [".png" ".jpg" ".jpeg" ".gif"])
-              {"content" (kwapply (render.image)
-                                  {"name" filename
-                                   "hash" hash})
+              {"content" (apply render.image []
+                                {"name" filename
+                                 "hash" hash})
                "style" ""}
               {"content" (highlight content lexer formatter)
                "style" (formatter.get-style-defs ".highlight")}))
-      (kwapply (render.main) args))
+      (apply render.main [] kwargs))
     ""))
 
 (defun get-html [self name]
@@ -129,10 +129,10 @@ If no lexer is found fallback onto the text lexer."
           (.write f (web.data)))
     (let ((repo (Gittle.init dirname)))
       (.stage repo [(str name)])
-      (kwapply (repo.commit)
-               {"name" "Hypo"
-                "email" "hypo@ryuslash.org"
-                "message" "Initial commit"}))
+      (apply repo.commit []
+             {"name" "Hypo"
+              "email" "hypo@ryuslash.org"
+              "message" "Initial commit"}))
     (setv web.ctx.status (str "201 Created"))
     (+ web.ctx.home "/" *prefix* (get h 0) "\n")))
 

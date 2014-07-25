@@ -25,12 +25,13 @@
        (sys.exit 1)))
 
 (def db
-  (kwapply (web.database)
-           {"dbn" "postgres" "user" *dbuser* "pw" *dbpw* "db" *dbname*}))
+  (apply web.database []
+         {"dbn" "postgres" "user" *dbuser* "pw" *dbpw* "db" *dbname*}))
 
 (defun get-file [name]
-  (let ((res (kwapply (.select db "hfile" {"shash" name})
-                      {"where" "shash = $shash"})))
+  (let ((res (apply .select
+                    [db "hfile" {"shash" name}]
+                    {"where" "shash = $shash"})))
     (if res (car res))))
 
 (foreach [f (os.listdir "files/")]
@@ -42,7 +43,7 @@
                (+ "files/" f "/" file.filename))
     (let ((repo (Gittle.init (+ "files/" f))))
       (.stage repo [(str file.filename)])
-      (kwapply (repo.commit)
-               {"name" "System"
-                "email" "tom@ryuslash.org"
-                "message" "Initial commit for upgrade to git"}))))
+      (apply repo.commit []
+             {"name" "System"
+              "email" "tom@ryuslash.org"
+              "message" "Initial commit for upgrade to git"}))))

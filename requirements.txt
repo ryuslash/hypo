@@ -1,4 +1,4 @@
-hy==0.9.12
+hy==0.10.0
 gittle==0.2.2
 pycommand==0.1.0
 web.py==0.37
