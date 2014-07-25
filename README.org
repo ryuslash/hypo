@@ -14,11 +14,11 @@ Easily delete them too.
 
    Hypo has the following requirements:
 
-   - [[http://hylang.org][hy]] :: The language.
-   - [[http://webpy.org][web.py]] :: The Python web framework.
-   - [[https://github.com/FriendCode/gittle][gittle]] :: Pythonic Git for Humans
-   - [[https://bitbucket.org/babab/pycommand][pycommand]] :: Command line arguments parser
-   - [[http://pygments.org/][Pygments]] :: Python syntax highlighter
+   - [[http://hylang.org][hy]] 0.10.0 :: The language.
+   - [[http://webpy.org][web.py]] 0.37 :: The Python web framework.
+   - [[https://github.com/FriendCode/gittle][gittle]] 0.2.2 :: Pythonic Git for Humans
+   - [[https://bitbucket.org/babab/pycommand][pycommand]] 0.1.0 :: Command line arguments parser
+   - [[http://pygments.org/][Pygments]] 1.6 :: Python syntax highlighter
 
    Besides these it also requires everything needed to run web.py
    applications using your favorite webserver.
