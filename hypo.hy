@@ -44,7 +44,7 @@
 
 (defun get-type [ext]
   (cond
-   [(in ext (, ".jpg" ".jpeg" ".png" ".gif")) "image"]
+   [(in (.lower ext) (, ".jpg" ".jpeg" ".png" ".gif")) "image"]
    [True "text"]))
 
 (defun read-file [filename]
@@ -92,7 +92,7 @@ If no lexer is found fallback onto the text lexer."
           (formatter (HtmlFormatter))
           (kwargs {"file" filename "hash" hash}))
       (.update
-       kwargs (if (in (get (os.path.splitext filename) 1)
+       kwargs (if (in (.lower (get (os.path.splitext filename) 1))
                     [".png" ".jpg" ".jpeg" ".gif"])
               {"content" (apply render.image []
                                 {"name" filename
