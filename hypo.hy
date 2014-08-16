@@ -152,6 +152,9 @@ If no lexer is found fallback onto the text lexer."
 (defclass index []
   [[GET (lambda [self] (render.index))]])
 
+(defun get-application []
+  (web.application urls (globals)))
+
 (defun hypo-start [argv]
   (let ((sys.argv argv)
         (app (web.application urls (globals))))
