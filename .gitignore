@@ -1,4 +1,4 @@
 *.pyc
 .emacs.desktop*
 config.hy
-files/
+/files/
