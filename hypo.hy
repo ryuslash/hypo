@@ -134,6 +134,7 @@ If no lexer is found fallback onto the text lexer."
               "email" "hypo@ryuslash.org"
               "message" "Initial commit"}))
     (setv web.ctx.status (str "201 Created"))
+    (web.header "Content-Type" "text/plain")
     (+ web.ctx.home "/" *prefix* (get h 0) "\n")))
 
 (defclass raw []
