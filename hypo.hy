@@ -108,8 +108,8 @@ If no lexer is found fallback onto the text lexer."
         (repo (and (os.path.exists dirname)
                    (Gittle dirname))))
     (if repo
-      (car (list-comp (render-file name repo "HEAD" f)
-                      [f (.iterkeys (.commit-tree repo "HEAD"))]
+      (car (list-comp (render-file name repo (str "HEAD") f)
+                      [f (.iterkeys (.commit-tree repo (str "HEAD")))]
                       (not (or (= f ".")
                                (= f "..")))))
       (no-such-file))))
