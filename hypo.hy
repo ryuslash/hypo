@@ -47,6 +47,14 @@
    [(in (.lower ext) (, ".jpg" ".jpeg" ".png" ".gif")) "image"]
    [True "text"]))
 
+(defn get-content-type [ext]
+  (let ((lowered (ext.lower)))
+   (cond
+    [(in lowered (, ".jpg" ".jpeg")) "image/jpeg"]
+    [".png" "image/png"]
+    [".gif" "image/gif"]
+    [True "text/plain"])))
+
 (defun read-file [filename]
   (let (res)
     (with [[f (file filename "r")]]
@@ -67,11 +75,14 @@ If no lexer is found fallback onto the text lexer."
 
 (defun get-raw [self name]
   (let ((dirname (+ "files/" (os.path.dirname name)))
+        (basename (os.path.basename name))
+        (ext (get (os.path.splitext basename) 0))
         (repo (and (os.path.exists dirname)
                    (Gittle dirname)))
         (resp (if repo
-                (get (.commit-file repo "HEAD" (os.path.basename name))
+                (get (.commit-file repo (str "HEAD") basename)
                      "data"))))
+    (web.header "Content-Type" (get-content-type ext))
     (or resp (no-such-file))))
 
 (defun get-attachment [self name]
@@ -85,9 +96,16 @@ If no lexer is found fallback onto the text lexer."
        (get (.commit-file repo "HEAD" (os.path.basename name)) "data"))
       (no-such-file))))
 
+(defn parse-git-content [content]
+  "Remove all the git metadata from CONTENT."
+  (try
+   (slice content (+ (content.find "\r\n\r\n") 4) (content.rfind "\r\n---"))
+   (catch [UnicodeDecodeError] content)))
+
 (defun render-file [hash repo ref filename]
   (if (not (os.path.isdir filename))
-    (let ((content (get (.commit-file repo ref filename) "data"))
+    (let ((content (parse-git-content
+                    (get (.commit-file repo ref filename) "data")))
           (lexer (get-lexer filename content))
           (formatter (HtmlFormatter))
           (kwargs {"file" filename "hash" hash}))

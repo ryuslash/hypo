@@ -9,8 +9,8 @@
     (assert-equal response.status 200)
     (.mustcontain response "Hypo")))
 
-(defn test-upload []
-  "Uploading a file returns a URL"
+(defn test-text-file-upload []
+  "Uploading a text file returns a URL"
   (let ((test-app (TestApp (.wsgifunc (get-application))))
         (test-files [(, (str "file") (str "foo.py") (str "somecontent"))])
         (response (apply test-app.put ["/test_code.hy"]
@@ -18,8 +18,17 @@
     (assert-equal response.status 201)
     (.mustcontain response "http://localhost/")))
 
-(defn test-view []
-  "After uploading a file it can be viewed"
+(defn test-image-file-upload []
+  "Uploading an image file returns a URL"
+  (let ((test-app (TestApp (.wsgifunc (get-application))))
+        (test-files [(, (str "file") (str "tests/files/gradient.jpg"))])
+        (response (apply test-app.put ["/gradient.jpg"]
+                         {"upload_files" test-files})))
+    (assert-equal response.status 201)
+    (.mustcontain response "http://localhost/")))
+
+(defn test-text-view []
+  "After uploading a text file it can be viewed"
   (let ((test-app (TestApp (.wsgifunc (get-application))))
         (test-files [(, (str "file") (str "foo.py") (str "somecontent"))])
         (upload-response
@@ -29,4 +38,29 @@
         (view-path (view-url.replace "http://localhost" ""))
         (view-response (test-app.get view-path)))
     (assert-equal view-response.status 200)
-    (.mustcontain view-response "test_code.hy" "somecontent")))
+    (view-response.mustcontain "test_code.hy" "somecontent")))
+
+(defn test-image-view []
+  "After uploading an image file it can be viewed"
+  (let ((test-app (TestApp (.wsgifunc (get-application))))
+        (test-files [(, (str "file") (str "tests/files/gradient.jpg"))])
+        (upload-response
+         (apply test-app.put ["/gradient.jpg"]
+                {"upload_files" test-files}))
+        (view-url (.strip upload-response.body))
+        (view-path (view-url.replace "http://localhost" ""))
+        (view-response (test-app.get view-path)))
+    (assert-equal view-response.status 200)
+    (view-response.mustcontain "gradient.jpg" "<img src=\"raw/")))
+
+(defn test-image-raw-view []
+  "After uploading an image file it can be viewed"
+  (let ((test-app (TestApp (.wsgifunc (get-application))))
+        (test-files [(, (str "file") (str "tests/files/gradient.jpg"))])
+        (upload-response
+         (apply test-app.put ["/gradient.jpg"]
+                {"upload_files" test-files}))
+        (view-url (.strip upload-response.body))
+        (view-path (view-url.replace "http://localhost" ""))
+        (view-response (test-app.get (+ "/raw" view-path "/gradient.jpg"))))
+    (assert-equal view-response.status 200)))
