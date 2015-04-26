@@ -142,7 +142,7 @@ If no lexer is found fallback onto the text lexer."
 (defun upload-file [self name]
   (let ((h (hashes name))
         (dirname (+ "files/" (get h 0))))
-    (os.mkdir dirname)
+    (os.makedirs dirname)
     (with [[f (file (+ dirname "/" name) "w")]]
           (.write f (web.data)))
     (let ((repo (Gittle.init dirname)))
