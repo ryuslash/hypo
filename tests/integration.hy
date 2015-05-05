@@ -64,3 +64,22 @@
         (view-path (view-url.replace "http://localhost" ""))
         (view-response (test-app.get (+ "/raw" view-path "/gradient.jpg"))))
     (assert-equal view-response.status 200)))
+
+(defn test-web-upload []
+  "There is a page to upload files through a form."
+  (let ((test-app (TestApp (.wsgifunc (get-application))))
+        (response (test-app.get "/upload/")))
+    (response.mustcontain
+     "<form method=\"POST\" enctype=\"multipart/form-data\""
+     "<input name=\"myfile\""
+     "<button type=\"submit\"")))
+
+(defn test-form-upload []
+  "Uploading an image through a POST request will redirect to its page."
+  (let ((test-app (TestApp (.wsgifunc (get-application))))
+        (test-files [(, (str "myfile") (str "something.txt") (str "somecontents"))])
+        (response
+         (apply test-app.post ["/upload/"] {"upload_files" test-files})))
+    (assert-equal response.status 302)
+    (setv response (response.follow))
+    (assert-equal response.status 200)))

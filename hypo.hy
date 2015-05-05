@@ -155,6 +155,25 @@ If no lexer is found fallback onto the text lexer."
     (web.header "Content-Type" "text/plain")
     (+ web.ctx.home "/" *prefix* (get h 0) "\n")))
 
+(defun upload-file-post [self name]
+  (let ((input (apply web.input [] {(str "myfile") {}}))
+        (upload (get input (str "myfile")))
+        (h (hashes upload.filename))
+        (dirname (+ "files/" (get h 0))))
+    (os.makedirs dirname)
+    (with [[f (file (+ dirname "/" upload.filename) "w")]]
+          (f.write upload.value))
+    (let ((repo (Gittle.init dirname)))
+      (repo.stage [upload.filename])
+      (apply repo.commit []
+             {"name" "Hypo"
+              "email" "hypo@ryuslash.org"
+              "message" "Initial commit"}))
+    (raise (web.found (+ "/" (get h 0))))))
+
+(defun upload-form [self name]
+  (render.upload-form))
+
 (defclass raw []
   [[GET get-raw]])
 
@@ -166,7 +185,9 @@ If no lexer is found fallback onto the text lexer."
    [DELETE delete-dir]])
 
 (defclass upload []
-  [[PUT upload-file]])
+  [[GET upload-form]
+   [POST upload-file-post]
+   [PUT upload-file]])
 
 (defclass index []
   [[GET (lambda [self] (render.index))]])

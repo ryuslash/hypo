@@ -47,6 +47,9 @@ Easily delete them too.
    If Hypo doens't know what kind of file you're uploading it will
    default to treating it as a text file.
 
+   Alternatively you can use the web form located at
+   ~http://yourserver.example.com/upload/~.
+
 ** Viewing
 
    All files can be viewed (from, for example, your web browser) in
