@@ -96,16 +96,9 @@ If no lexer is found fallback onto the text lexer."
        (get (.commit-file repo "HEAD" (os.path.basename name)) "data"))
       (no-such-file))))
 
-(defn parse-git-content [content]
-  "Remove all the git metadata from CONTENT."
-  (try
-   (slice content (+ (content.find "\r\n\r\n") 4) (content.rfind "\r\n---"))
-   (catch [UnicodeDecodeError] content)))
-
 (defun render-file [hash repo ref filename]
   (if (not (os.path.isdir filename))
-    (let ((content (parse-git-content
-                    (get (.commit-file repo ref filename) "data")))
+    (let ((content (get (.commit-file repo ref filename) "data"))
           (lexer (get-lexer filename content))
           (formatter (HtmlFormatter))
           (kwargs {"file" filename "hash" hash}))

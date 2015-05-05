@@ -82,4 +82,5 @@
          (apply test-app.post ["/upload/"] {"upload_files" test-files})))
     (assert-equal response.status 302)
     (setv response (response.follow))
-    (assert-equal response.status 200)))
+    (assert-equal response.status 200)
+    (response.mustcontain "somecontents")))
