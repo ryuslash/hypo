@@ -39,8 +39,3 @@
 (defun test-get-lexer []
   (assert-equal (. (hypo.get-lexer "foo.el" "") name) "Common Lisp")
   (assert-equal (. (hypo.get-lexer "foo" "") name) "Text only"))
-
-(defun test-parse-git-content []
-  "`parse-git-content' removes all the git metadata"
-  (let ((result (hypo.parse-git-content "------------a_BoUnDaRy0.721252189483$\r\nContent-Disposition: form-data; name=\"filesome\"; filename=\"foobar.py\"\r\nContent-Type: text/x-python\r\n\r\nsomecontentfoobar\r\n------------a_BoUnDaRy0.721252189483$--\r\n")))
-    (assert-equal result "somecontentfoobar")))
