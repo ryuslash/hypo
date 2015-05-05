@@ -13,7 +13,7 @@
   "Uploading a text file returns a URL"
   (let ((test-app (TestApp (.wsgifunc (get-application))))
         (test-files [(, (str "file") (str "foo.py") (str "somecontent"))])
-        (response (apply test-app.put ["/test_code.hy"]
+        (response (apply test-app.put ["/upload/test_code.hy"]
                          {"upload_files" test-files})))
     (assert-equal response.status 201)
     (.mustcontain response "http://localhost/")))
@@ -22,7 +22,7 @@
   "Uploading an image file returns a URL"
   (let ((test-app (TestApp (.wsgifunc (get-application))))
         (test-files [(, (str "file") (str "tests/files/gradient.jpg"))])
-        (response (apply test-app.put ["/gradient.jpg"]
+        (response (apply test-app.put ["/upload/gradient.jpg"]
                          {"upload_files" test-files})))
     (assert-equal response.status 201)
     (.mustcontain response "http://localhost/")))
@@ -32,7 +32,7 @@
   (let ((test-app (TestApp (.wsgifunc (get-application))))
         (test-files [(, (str "file") (str "foo.py") (str "somecontent"))])
         (upload-response
-         (apply test-app.put ["/test_code.hy"]
+         (apply test-app.put ["/upload/test_code.hy"]
                 {"upload_files" test-files}))
         (view-url (.strip upload-response.body))
         (view-path (view-url.replace "http://localhost" ""))
@@ -45,7 +45,7 @@
   (let ((test-app (TestApp (.wsgifunc (get-application))))
         (test-files [(, (str "file") (str "tests/files/gradient.jpg"))])
         (upload-response
-         (apply test-app.put ["/gradient.jpg"]
+         (apply test-app.put ["/upload/gradient.jpg"]
                 {"upload_files" test-files}))
         (view-url (.strip upload-response.body))
         (view-path (view-url.replace "http://localhost" ""))
@@ -58,7 +58,7 @@
   (let ((test-app (TestApp (.wsgifunc (get-application))))
         (test-files [(, (str "file") (str "tests/files/gradient.jpg"))])
         (upload-response
-         (apply test-app.put ["/gradient.jpg"]
+         (apply test-app.put ["/upload/gradient.jpg"]
                 {"upload_files" test-files}))
         (view-url (.strip upload-response.body))
         (view-path (view-url.replace "http://localhost" ""))

@@ -33,7 +33,7 @@
              (+ "/" *prefix* "raw/(.*)") "raw"
              (+ "/" *prefix* "dl/(.*)") "download"
              (+ "/" *prefix* "([a-f0-9]{7})$") "html"
-             (+ "/" *prefix* "(.*)") "upload"))
+             (+ "/" *prefix* "upload/(.*)") "upload"))
 
 (defun hashes [name]
   (let ((hasher (hashlib.sha1)))
