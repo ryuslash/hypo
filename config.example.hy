@@ -13,12 +13,9 @@
 
 ;; You should have received a copy of the GNU Affero General Public
 ;; License along with Hypo.  If not, see <http://www.gnu.org/licenses/>.
-
-(def *dbuser* "")               ; User to log in with
-(def *dbpw* "")                 ; Password to log in with
-(def *dbname* "")               ; Database to use
+(import os)
 
 ;; Prefix to use when running. This option should contain a trailing
 ;; `/'. An example would be: if you're running this project under
 ;; http://example.com/hypo/ you should use "hypo/".
-(def *prefix* "")
+(def *prefix* (os.getenv "HYPO_PREFIX" ""))
