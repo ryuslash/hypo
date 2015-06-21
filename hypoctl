@@ -16,7 +16,7 @@
 ;; License along with Hypo.  If not, see <http://www.gnu.org/licenses/>.
 
 (import pycommand sys web os
-        [hypo [hypo-start]])
+        [hypo [hypo-start hypo-start-wsgi]])
 
 (defclass hypoctl-command (pycommand.CommandBase)
   [[usagestr "usage: hypoctl <command> [<args]"]
@@ -27,6 +27,8 @@
             (progn (print self.usage) 2)]
            [(= (car self.args) "start")
             (hypo-start (cdr self.args))]
+           [(= (car self.args) "start-wsgi")
+            (hypo-start-wsgi (cdr self.args))]
            [True
             (print (.format "error: command {0} does not exist"
                             (car self.args)))]))]])

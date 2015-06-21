@@ -192,3 +192,8 @@ If no lexer is found fallback onto the text lexer."
   (let ((sys.argv argv)
         (app (web.application urls (globals))))
     (.run app)))
+
+(defun hypo-start-wsgi [argv]
+  (let ((sys.argv argv)
+        (app (web.application url (globals))))
+    (app.wsgifunc)))
