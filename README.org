@@ -5,6 +5,7 @@ Quickly share bits of code, screenshots and whatnot with some friends.
 Easily delete them too.
 
 [[https://travis-ci.org/ryuslash/hypo][https://travis-ci.org/ryuslash/hypo.svg?branch=master]]
+[[https://gemnasium.com/ryuslash/hypo][https://gemnasium.com/ryuslash/hypo.svg]]
 
 * Setup
 
