@@ -53,8 +53,22 @@
     (assert-equal view-response.status 200)
     (view-response.mustcontain "gradient.jpg" "<img src=\"raw/")))
 
+(defn test-text-raw-view []
+  "After uploading a text file it can be viewed in raw form"
+  (let ((test-app (TestApp (.wsgifunc (get-application))))
+        (test-files [(, (str "file") (str "foo.py") (str "somecontent"))])
+        (upload-response
+         (apply test-app.put ["/upload/test_code.hy"]
+                {"upload_files" test-files}))
+        (view-url (upload-response.body.strip))
+        (view-path (view-url.replace "http://localhost" ""))
+        (view-response (test-app.get (+ "/raw" view-path "/test_code.hy"))))
+    (assert-equal view-response.status 200)
+    (assert-equal (view-response.header "Content-Type") "text/plain")
+    (view-response.mustcontain "somecontent")))
+
 (defn test-image-raw-view []
-  "After uploading an image file it can be viewed"
+  "After uploading an image file it can be viewed in raw form"
   (let ((test-app (TestApp (.wsgifunc (get-application))))
         (test-files [(, (str "file") (str "tests/files/gradient.jpg"))])
         (upload-response
@@ -63,7 +77,8 @@
         (view-url (.strip upload-response.body))
         (view-path (view-url.replace "http://localhost" ""))
         (view-response (test-app.get (+ "/raw" view-path "/gradient.jpg"))))
-    (assert-equal view-response.status 200)))
+    (assert-equal view-response.status 200)
+    (assert-equal (view-response.header "Content-Type") "image/jpeg")))
 
 (defn test-web-upload []
   "There is a page to upload files through a form."

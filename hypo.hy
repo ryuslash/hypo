@@ -49,11 +49,11 @@
 
 (defn get-content-type [ext]
   (let ((lowered (ext.lower)))
-   (cond
-    [(in lowered (, ".jpg" ".jpeg")) "image/jpeg"]
-    [".png" "image/png"]
-    [".gif" "image/gif"]
-    [True "text/plain"])))
+    (cond
+     [(in lowered (, ".jpg" ".jpeg")) "image/jpeg"]
+     [(= lowered ".png") "image/png"]
+     [(= lowered ".gif") "image/gif"]
+     [True "text/plain"])))
 
 (defun read-file [filename]
   (let (res)
@@ -76,7 +76,7 @@ If no lexer is found fallback onto the text lexer."
 (defun get-raw [self name]
   (let ((dirname (+ "files/" (os.path.dirname name)))
         (basename (os.path.basename name))
-        (ext (get (os.path.splitext basename) 0))
+        (ext (get (os.path.splitext basename) 1))
         (repo (and (os.path.exists dirname)
                    (Gittle dirname)))
         (resp (if repo
