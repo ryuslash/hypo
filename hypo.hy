@@ -87,13 +87,17 @@ If no lexer is found fallback onto the text lexer."
 
 (defun get-attachment [self name]
   (let ((dirname (+ "files/" (os.path.dirname name)))
+        (basename (os.path.basename name))
+        (ext (get (os.path.splitext basename) 1))
         (repo (and (os.path.exists dirname)
                    (Gittle dirname))))
     (if repo
       (progn
+       (web.header "Content-Type" (get-content-type ext))
        (web.header "Content-Disposition"
                    (+ "attachment; filename=\"" name "\""))
-       (get (.commit-file repo "HEAD" (os.path.basename name)) "data"))
+       (get (.commit-file repo (str "HEAD") (os.path.basename name))
+            "data"))
       (no-such-file))))
 
 (defun render-file [hash repo ref filename]

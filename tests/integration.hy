@@ -99,3 +99,34 @@
     (setv response (response.follow))
     (assert-equal response.status 200)
     (response.mustcontain "somecontents")))
+
+(defn test-text-download-view []
+  "After uploading a text file it can be downloaded"
+  (let ((test-app (TestApp (.wsgifunc (get-application))))
+        (test-files [(, (str "file") (str "foo.py") (str "somecontent"))])
+        (upload-response
+         (apply test-app.put ["/upload/test_code.hy"]
+                {"upload_files" test-files}))
+        (view-url (upload-response.body.strip))
+        (view-path (view-url.replace "http://localhost" ""))
+        (view-response (test-app.get (+ "/dl" view-path "/test_code.hy"))))
+    (assert-equal view-response.status 200)
+    (assert-equal (view-response.header "Content-Type") "text/plain")
+    (assert-true (.startswith (view-response.header "Content-Disposition")
+                              "attachment; filename=\""))
+    (view-response.mustcontain "somecontent")))
+
+(defn test-image-download-view []
+  "After uploading an image file it can be downloaded"
+  (let ((test-app (TestApp (.wsgifunc (get-application))))
+        (test-files [(, (str "file") (str "tests/files/gradient.jpg"))])
+        (upload-response
+         (apply test-app.put ["/upload/gradient.jpg"]
+                {"upload_files" test-files}))
+        (view-url (upload-response.body.strip))
+        (view-path (view-url.replace "http://localhost" ""))
+        (view-response (test-app.get (+ "/dl" view-path "/gradient.jpg"))))
+    (assert-equal view-response.status 200)
+    (assert-equal (view-response.header "Content-Type") "image/jpeg")
+    (assert-true (.startswith (view-response.header "Content-Disposition")
+                              "attachment; filename=\""))))
